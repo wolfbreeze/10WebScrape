@@ -7,8 +7,8 @@ import time
 
 
 def start_browser():
-    executable_path = {"executable_path": "chromedriver.exe"}
-    return Browser("chrome", **executable_path, headless=False)
+    
+    return Browser("chrome", headless=False)
 
 def scrape ():
     browser = start_browser()
@@ -113,8 +113,9 @@ def scrape ():
             print(e)
             
         tweet_link=e
-        break    
-         mars_data["weather_summary"] = tweet_link
+        break   
+
+        mars_data["weather_summary"] = tweet_link
 
 
      #Visit the Mars Facts webpage here and use Pandas to scrape the table containing facts about the planet including Diameter,

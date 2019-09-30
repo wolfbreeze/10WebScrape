@@ -12,12 +12,12 @@ client = pymongo.MongoClient()
 db = client.mars_db
 collection = db.mars_data_entries
 
-@app.rout("/")
+@app.route("/")
 def home():
     mars_data = list(db.collecion.find())[0]
     return render_template('index.html', mars_data=mars_data)
 
-@app.rout("/scrape")
+@app.route("/scrape")
 def scrape():
     db.collection.remove({})
 
