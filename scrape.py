@@ -5,11 +5,12 @@ import pymongo
 from splinter import Browser
 import time
 
-
+# starts up Chrome browser, headless and no extention as Mac Chrome does not need it
 def start_browser():
     
     return Browser("chrome", headless=False)
 
+#Let the scraping of websites begin!
 def scrape ():
     browser = start_browser()
     mars_data = {}
@@ -17,12 +18,16 @@ def scrape ():
     # visit the NASA Mars News site and scrape headlines
     nasa_url = 'https://mars.nasa.gov/news/'
     browser.visit(nasa_url)
-    
+    # takes URL and goes to browser to load webpage
+
     nasa_html = browser.html
     nasa_soup = BeautifulSoup(nasa_html, 'html.parser')
+    # calls BeautifulSoup to parse of vu tup the browsed webpage
 
     list_of_news = nasa_soup.find('ul', class_='item_list')
+    #finds unordered list in a class of item_list in html puts all this into list_of_news
     first_item_of_list = list_of_news.find('li', class_='slide')
+    #
     header = first_item_of_list.find('div', class_='content_title').text
     synoposis = first_item_of_list.find('div', class_='article_teaser_body').text
 
