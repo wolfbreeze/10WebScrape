@@ -1,3 +1,6 @@
+#Code from https://github.com/Ghernandez1991/Flask-Mongodb
+#Thank you for your time Joe
+
 import pandas as pd
 from bs4 import BeautifulSoup
 import requests
@@ -22,109 +25,85 @@ def scrape ():
 
     nasa_html = browser.html
     nasa_soup = BeautifulSoup(nasa_html, 'html.parser')
-    # calls BeautifulSoup to parse of vu tup the browsed webpage
+    # calls BeautifulSoup to parse of text of the browsed webpage
 
     list_of_news = nasa_soup.find('ul', class_='item_list')
     #finds unordered list in a class of item_list in html puts all this into list_of_news
     first_item_of_list = list_of_news.find('li', class_='slide')
-    #
+    #finds listed item in a class of slide in list_of_news puts all this into first_item_of_list
     header = first_item_of_list.find('div', class_='content_title').text
+    #finds div in a class of content_title puts the text into header
     synoposis = first_item_of_list.find('div', class_='article_teaser_body').text
+    #finds div in a class of article_teaser_body puts the text into synoposis
 
     
     results1 = nasa_soup.find_all('li', class_="slide")
+#finds all listed items in a class of slide puts the into results1
 
     mars_data["nasa_headline"] = header
+    #puts text of header into mars_data dictionary as nasa_headline
     mars_data["nasa_teaser"] = synoposis
-
-    # not going to grab all the results from results1 as we did in the 
-    #notebook. for purposes of this flask app we only need the first
-    #result
-
-
-
-
+     #puts text of synoposis into mars_data dictionary as nasa_data
 
 
    #Visit the url for JPL Featured Space Image here.
 
     image_url = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
     browser.visit(image_url)
+     #takes URL and goes to browser to load webpage
     browser.click_link_by_partial_text('FULL IMAGE')
-
+# clicks hypertextlink to pull FUll Image of webpage first image
 
 
     expand = browser.find_by_css('a.fancybox-expand')
     expand.click()
     time.sleep(1)
+    #stops the loading of an iframe
 
     image_url_html = browser.html
     image_soup = BeautifulSoup(image_url_html, 'html.parser')
-
+    # calls BeautifulSoup to parse of text of the browsed webpage
+# grabbing down teh html text to find the latest photo of Mars
     img_relative_path = image_soup.find('img', class_='fancybox-image')['src']
     featured_image_url = f'https://www.jpl.nasa.gov{img_relative_path}'
     mars_data["feature_image_src"] = featured_image_url
 
     #Visit the Mars Weather twitter account here and scrape the latest Mars weather tweet from the page.
 #Save the tweet text for the weather report as a variable called mars_weather.
-
     twitter_url = "https://twitter.com/marswxreport?lang=en"
-    
     browser.visit(twitter_url)
-
     twitter_html = browser.html
     twitter_soup = BeautifulSoup(twitter_html, 'html.parser')
-
-
-
+    # calls BeautifulSoup to parse of text of the browsed webpage
     tweets = twitter_soup.find('div', class_='stream')
-
 #Scrape twitter page for latest weather data
-    
     for tweet in tweets:
-   
         try:
-        
-        
-   
             text_of_tweets = tweets.find('p', class_= "tweet-text").text
-
-            
-
          #The time and date of article publication
-            
-    
-        
             if(text_of_tweets):
                 print('-----------------')
                 print(text_of_tweets)
                 
                 
                 
-        
+        #Tweet Title and text of tweet put into a dictionary
          # Dictionary to be inserted into MongoDB
                 post = {
                     'Tweet Title': text_of_tweets
                 }
-
 # Insert dictionary into MongoDB as a document
                 collection1.insert_one(post)
         
-        
-        
-        
-        
         except AttributeError as e:
             print(e)
-            
         tweet_link=e
-        break   
-
+        break  
         mars_data["weather_summary"] = tweet_link
+#this places the tweet into the Mongo db
 
 
      #Visit the Mars Facts webpage here and use Pandas to scrape the table containing facts about the planet including Diameter,
-    
 
     mars_url = "https://space-facts.com/mars/"
 
@@ -132,6 +111,7 @@ def scrape ():
     
     mars1_html = browser.html
     mars1_soup = BeautifulSoup(mars1_html, 'html.parser')
+# calls BeautifulSoup to parse of text of the browsed webpage
 
     mars_table = mars1_soup.find('section', class_='sidebar widget-area clearfix')
     first_table = mars_table.find('table', class_='tablepress tablepress-id-p-mars')
