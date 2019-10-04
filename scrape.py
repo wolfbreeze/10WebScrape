@@ -131,9 +131,10 @@ def scrape ():
     df
     mars_table_html = df.to_html(header=False, index=False)
     mars_data["fact_table"] = mars_table_html
-
+#taking mars facts table into panda dataframe without headers and index into  mars_table_html that is placed into Mongo DB mars_data blob
 
     #grabbing hemisphere1
+    # looking for and grabbing a photo title and URL
     
     hemi_url = "https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
 
@@ -152,7 +153,7 @@ def scrape ():
         break
 
     #Grab hemi 2
-
+# looking for and grabbing a photo title and URL
 
     browser.visit(hemi_url)
     browser.click_link_by_partial_text('Schiaparelli Hemisphere Enhanced')
@@ -171,6 +172,7 @@ def scrape ():
 
 
     #find hemi 3
+    # looking for and grabbing a photo title and URL
     browser.visit(hemi_url)
     browser.click_link_by_partial_text('Syrtis Major Hemisphere Enhanced')
 
@@ -187,6 +189,7 @@ def scrape ():
         break
 
     # find hemisphere 4
+    # looking for and grabbing a photo title and URL
     browser.visit(hemi_url)
     browser.click_link_by_partial_text('Valles Marineris Hemisphere Enhanced')
 
@@ -202,6 +205,7 @@ def scrape ():
         valles=a['href']
         break
     
+    # saving locations URLS of 4 photos and their titles in a dictionary
     hemisphere_image_urls = [
     {"title": "Valles Marineris Hemisphere", "img_url": valles},
     {"title": "Cerberus Hemisphere", "img_url": cereberus},
@@ -209,5 +213,5 @@ def scrape ():
     {"title": "Syrtis Major Hemisphere", "img_url": syrtis},
     ]
 
-    
+    #Saving dictionary of URL and tittels in Mongo db
     mars_data["hemisphere_imgs"] = hemisphere_image_urls
